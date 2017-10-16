@@ -85,11 +85,9 @@ public class OurTypeACurveGenerator implements PairingParametersGenerator {
 
                     q = q.setBit(bit);
                     // h = BigIntegerUtils.getRandom(q, this.random).multiply(BigIntegerUtils.TWELVE);
-                    h = BigIntegerUtils.SIX;
-
+                    h = BigIntegerUtils.TWELVE;
                     // (h * r) - 1 = q
-                    // (2 * h * r) - 1 = q
-                    q = h.multiply(BigIntegerUtils.TWO).multiply(r).subtract(BigInteger.ONE);
+                    q = h.multiply(r).subtract(BigInteger.ONE);
                     if(q.isProbablePrime(10)) {
                         found = true;
                         break;

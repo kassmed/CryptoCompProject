@@ -19,7 +19,6 @@ public class TestTypeACurveGenerator {
     private static final BigInteger ONE = BigInteger.ONE;
     private static final BigInteger TWO = new BigInteger("2");
     private static final BigInteger THREE = new BigInteger("3");
-    private static final BigInteger SIX = new BigInteger("6");
     private static final BigInteger TWELVE = new BigInteger("12");
 
     @Before
@@ -37,21 +36,17 @@ public class TestTypeACurveGenerator {
 
     @Test
     public void test4() throws Exception {
-        // assertThat(r.multiply(h), is(q.add(BigInteger.ONE))); // r * h = q + 1
-        assertThat(r.multiply(h).multiply(TWO), is(q.add(BigInteger.ONE))); // 2 * r * h = q + 1
-        // TODO: NOT THE ORIGINAL REQUIREMENT (p. 14)
+        assertThat(r.multiply(h), is(q.add(BigInteger.ONE))); // r * h = q + 1
     }
 
     @Test
     public void test3() throws Exception {
-        //assertThat(q.add(ONE).mod(TWELVE), is(ZERO)); // q + 1 % 12 == 0
-        assertThat(q.add(ONE).mod(SIX), is(ZERO)); // q + 1 % 6 == 0
+        assertThat(q.add(ONE).mod(TWELVE), is(ZERO)); // q + 1 % 12 == 0
     }
 
     @Test
     public void test2() throws Exception {
-        // assertThat(h.mod(TWELVE), is(ZERO)); // h % 12 == 0
-        assertThat(h.mod(SIX), is(ZERO)); // h % 6 == 0
+        assertThat(h.mod(TWELVE), is(ZERO)); // h % 12 == 0
     }
 
     @Test
