@@ -15,7 +15,12 @@ public class Hash1Algorithm implements HashAlgorithm<Element> {
 
     @Override
     public Element hash(String input) {
-        byte[] hash = sha256.digest(input.getBytes());
+        return hash(input.getBytes());
+    }
+
+    @Override
+    public Element hash(byte[] input) {
+        byte[] hash = sha256.digest(input);
         return G1.newElementFromBytes(hash);
     }
 }

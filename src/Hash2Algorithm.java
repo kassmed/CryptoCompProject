@@ -16,6 +16,11 @@ public class Hash2Algorithm implements HashAlgorithm<byte[]> {
 
     @Override
     public byte[] hash(String input) {
-        return sha256.digest(input.getBytes());
+        return hash(input.getBytes());
+    }
+
+    @Override
+    public byte[] hash(byte[] input) {
+        return sha256.digest(input);
     }
 }

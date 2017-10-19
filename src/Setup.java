@@ -13,6 +13,7 @@ public class Setup {
     private final Field G1;
     private final Field G2;
     private final Field GT;
+    private final Field ZR;
 
     private HashAlgorithm hash1;
     private HashAlgorithm hash2;
@@ -36,6 +37,7 @@ public class Setup {
         G1 = pairing.getG1();
         G2 = pairing.getG2();
         GT = pairing.getGT();
+        ZR = pairing.getZr();
 
         Element s = pairing.getZr().newRandomElement();
         if (s.isZero() || s.isOne()) { throw new RuntimeException("s is not generator"); }
@@ -120,5 +122,9 @@ public class Setup {
 
     public PairingParameters getPairingParameters() {
         return pairingParameters;
+    }
+
+    public Field getZR() {
+        return ZR;
     }
 }
