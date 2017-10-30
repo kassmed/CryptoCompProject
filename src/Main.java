@@ -11,19 +11,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        SecureRandom rand = new SecureRandom();
 
-        String id = "hello@world.dk";
-
-        BasicIdent ident = new BasicIdent();
-        ident.setup();
-        ident.extract(id);
-
-        for (int i = 0; i < 100; i++) {
-            String m = new BigInteger(256, rand).toString();
-            Ciphertext ciphertext = ident.encrypt(id, m);
-            String plaintext = ident.decrypt(id, ciphertext);
-            System.out.println(m.equals(plaintext));
-        }
     }
 }

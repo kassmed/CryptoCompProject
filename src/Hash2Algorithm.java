@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.security.MessageDigest;
 
 public class Hash2Algorithm {
@@ -10,7 +11,7 @@ public class Hash2Algorithm {
         this.n = n;
     }
 
-    public byte[] hash(byte[] input) {
-        return String.format("%"+n+"s", new String(sha256.digest(input))).getBytes();
+    public BigInteger hash(byte[] input) {
+        return new BigInteger(String.format("%"+n+"s", new String(sha256.digest(input))).getBytes());
     }
 }

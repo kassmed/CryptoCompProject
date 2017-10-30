@@ -14,22 +14,25 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BasicIdent implements IdentityScheme {
+public class FullIdent implements IdentityScheme {
+
+    private Hash1Algorithm hash1;
+    private Hash2Algorithm hash2;
+    private Hash3Algorithm hash3;
+    private Hash4Algorithm hash4;
 
     private PairingParameters pairingParameters;
     private Pairing pairing;
 
-    private Hash1Algorithm hash1;
-    private Hash2Algorithm hash2;
-
     private Element masterSecret;
     private Element generator;
     private Element publicKey;
+
     private Map<String, Element> knownKeys = new HashMap<>();
 
     @Override
     public void setup() {
-        String filename = "basic.properties";
+        String filename = "full.properties";
         pairingParameters = generate(filename);
         PairingFactory.getInstance().setUsePBCWhenPossible(true);
         pairing = PairingFactory.getPairing(filename);
@@ -50,6 +53,8 @@ public class BasicIdent implements IdentityScheme {
             MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
             hash1 = new Hash1Algorithm(pairing.getG1(), sha256);
             hash2 = new Hash2Algorithm(sha256, 256);
+            hash3 = new Hash3Algorithm(sha256, 256,  pairing.getZr());
+            hash4 = new Hash4Algorithm(sha256);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             System.exit(-1);
@@ -65,24 +70,44 @@ public class BasicIdent implements IdentityScheme {
 
     @Override
     public Ciphertext encrypt(String id, String msg) {
-        Element qID = hash1.hash(id);
-        Element r = pairing.getZr().newRandomElement();
-        Element rP = publicKey.mulZn(r);
+        Element qid = hash1.hash(id.getBytes());
+        Element sigma = pairing.getZr().newRandomElement();
+        Element r = hash3.hash(sigma.toBytes(), msg.getBytes());
 
-        BigInteger m = new BigInteger(msg.getBytes());
 
-        byte[] b = pairing.pairing(qID, publicKey).powZn(r).toBytes();
-        BigInteger hash = hash2.hash(b);
+        Element u = generator.mulZn(r);
 
-        return new Ciphertext(rP, m.xor(hash).toByteArray());
+        Element gid = pairing.pairing(qid, publicKey);
+        BigInteger v = sigma.toBigInteger().xor(hash2.hash(gid.powZn(r).toBytes()));
+
+        BigInteger h4 = hash4.hash(sigma);
+        BigInteger w = new BigInteger(msg).xor(h4);
+
+        return new Ciphertext(u, v, w);
     }
 
     @Override
     public String decrypt(String id, Ciphertext ciphertext) {
-        Element e = pairing.pairing(knownKeys.get(id), ciphertext.getU());
-        BigInteger hash = hash2.hash(e.toBytes());
-        BigInteger m = ciphertext.getV().xor(hash);
-        return new String(m.toByteArray());
+
+        Element u = ciphertext.getU();
+        if (!pairing.getG1().newElement(u).isEqual(u)) { // TODO: Is this check correct
+            throw new RuntimeException("u not in G1*");
+        }
+
+        Element did = knownKeys.get(id);
+        Element e = pairing.pairing(did, u);
+        BigInteger sigma = ciphertext.getV().xor(hash2.hash(e.toBytes()));
+
+        BigInteger h4 = hash4.hash(sigma);
+
+        String msg = ciphertext.getW().xor(h4).toString();
+
+        Element r = hash3.hash(sigma.toByteArray(), msg.getBytes());
+        if (!generator.mulZn(r).isEqual(ciphertext.getU())) {
+            throw new RuntimeException("r*P != U");
+        }
+
+        return msg;
     }
 
     private PairingParameters generate(String filename) {

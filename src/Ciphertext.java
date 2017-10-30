@@ -1,20 +1,34 @@
 import it.unisa.dia.gas.jpbc.Element;
 
+import java.math.BigInteger;
+
 public class Ciphertext {
 
-    Element left;
-    byte[] right;
+    private Element u;
+    private BigInteger v;
+    private BigInteger w;
 
-    public Ciphertext(Element left, byte[] right) {
-        this.left = left;
-        this.right = right;
+    @Deprecated
+    public Ciphertext(Element u, byte[] v) {
+        this.u = u;
+        this.v = new BigInteger(v);
     }
 
-    public Element getLeft() {
-        return left;
+    public Ciphertext(Element u, BigInteger v, BigInteger w) {
+        this.u = u;
+        this.v = v;
+        this.w = w;
     }
 
-    public byte[] getRight() {
-        return right;
+    public Element getU() {
+        return u;
+    }
+
+    public BigInteger getV() {
+        return v;
+    }
+
+    public BigInteger getW() {
+        return w;
     }
 }
