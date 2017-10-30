@@ -3,7 +3,7 @@ import it.unisa.dia.gas.jpbc.Field;
 
 import java.security.MessageDigest;
 
-public class Hash1Algorithm implements HashAlgorithm<Element> {
+public class Hash1Algorithm {
 
     private Field G1;
     private MessageDigest sha256;
@@ -13,12 +13,10 @@ public class Hash1Algorithm implements HashAlgorithm<Element> {
         this.sha256 = sha256;
     }
 
-    @Override
     public Element hash(String input) {
         return hash(input.getBytes());
     }
 
-    @Override
     public Element hash(byte[] input) {
         byte[] hash = sha256.digest(input);
         return G1.newElementFromBytes(hash);

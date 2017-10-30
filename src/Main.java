@@ -1,5 +1,4 @@
 import it.unisa.dia.gas.jpbc.Element;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -16,40 +15,15 @@ public class Main {
 
         String id = "hello@world.dk";
 
-        Setup setup = new Setup();
-        extract(id, setup);
+        BasicIdent ident = new BasicIdent();
+        ident.setup();
+        ident.extract(id);
 
         for (int i = 0; i < 100; i++) {
             String m = new BigInteger(256, rand).toString();
-            Ciphertext ciphertext = encrypt(m, id, setup);
-            String plaintext = decrypt(id, ciphertext, setup);
+            Ciphertext ciphertext = ident.encrypt(id, m);
+            String plaintext = ident.decrypt(id, ciphertext);
             System.out.println(m.equals(plaintext));
         }
-    }
-
-    private static void extract(String id, Setup setup) {
-        Element qID = (Element) setup.getHash1().hash(id);
-        Element dID = qID.mulZn(setup.getMasterSecret());
-        knownKeys.put(id, dID);
-    }
-
-    private static Ciphertext encrypt(String msg, String id, Setup setup) {
-        Element qID = (Element) setup.getHash1().hash(id);
-        Element r = setup.getZR().newRandomElement();
-        Element rP = setup.getPublicKey().mulZn(r);
-
-        BigInteger m = new BigInteger(msg.getBytes());
-
-        byte[] b = setup.getPairing().pairing(qID, setup.getPublicKey()).powZn(r).toBytes();
-        BigInteger hash = new BigInteger((byte[]) setup.getHash2().hash(b));
-
-        return new Ciphertext(rP, m.xor(hash).toByteArray());
-    }
-
-    private static String decrypt(String id, Ciphertext ciphertext, Setup setup) {
-        Element e = setup.getPairing().pairing(knownKeys.get(id), ciphertext.getLeft());
-        byte[] hash = (byte[]) setup.getHash2().hash(e.toBytes());
-        BigInteger m = new BigInteger(ciphertext.getRight()).xor(new BigInteger(hash));
-        return new String(m.toByteArray());
     }
 }
