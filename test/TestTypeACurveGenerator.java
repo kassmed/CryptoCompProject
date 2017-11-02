@@ -33,6 +33,10 @@ public class TestTypeACurveGenerator {
         q = params.getBigInteger("q");
     }
 
+    @Test
+    public void test5() throws Exception {
+        //assertThat(q.bitLength(), is(1024)); // r * h = q + 1
+    }
 
     @Test
     public void test4() throws Exception {
