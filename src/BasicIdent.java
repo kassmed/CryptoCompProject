@@ -38,8 +38,17 @@ public class BasicIdent implements IdentityScheme {
         if (s.isZero() || s.isOne()) { throw new RuntimeException("s is not generator"); }
         masterSecret = s;
 
+        /*
+        Type A pairings are constructed on the curve y2 = x3 + x over the field F_q for some prime q = 3 mod 4.
+        Both G1 and G2 are the group of points E(F_q), so this pairing is symmetric.
+        It turns out #E(F_q) = q + 1 and #E(F_q2) = (q + 1)2.
+        Thus the embedding degree k is 2, and hence GT is a subgroup of F_q^2.
+        The order r is some prime factor of q + 1.
+         */
         Element p = pairing.getG1().newRandomElement();
-        if (p.isZero() || p.isOne()) { throw new RuntimeException("p is not generator"); }
+        Element ord = pairing.getZr().newElement(pairing.getG1().getOrder());
+        Element pmul = pairing.getG1().newElement(p).mulZn(ord);
+        if (p.isOne() || !pmul.isZero()) { throw new RuntimeException("p is not generator"); }
         generator = p;
 
         Element sP = p.mulZn(s);
