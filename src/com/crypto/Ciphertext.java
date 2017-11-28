@@ -1,3 +1,5 @@
+package com.crypto;
+
 import it.unisa.dia.gas.jpbc.Element;
 
 import java.math.BigInteger;
@@ -30,5 +32,10 @@ public class Ciphertext {
 
     public BigInteger getW() {
         return w;
+    }
+
+    @Override
+    public String toString(){
+        return String.format("%s-%s-%s", u,v,w);
     }
 }
