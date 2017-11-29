@@ -22,6 +22,7 @@ public class TestFullIdent {
 
         for (int i = 0; i < 100; i++) {
             String m = new BigInteger(255, rand).toString();
+            // String m = "qwertyuiopasdfghjklzxcvbnm123456";
             Ciphertext ciphertext = ident.encrypt(id, m);
             String plaintext = ident.decrypt(id, ciphertext);
             //System.out.println("input: "+ m);

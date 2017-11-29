@@ -22,7 +22,7 @@ public class TestHIBE {
         HIBE h = new HIBE();
         List<Element> params = h.setup(id.size());
         List<Element> dID = h.keyGen(params, id);
-        String message = "Bye world";
+        String message = "qwertyuiopasdfghjklzxcvbnm123456";
         ArrayList<Element> cipher = h.encrypt(params, id, message);
         String plain = h.decrypt(dID, cipher);
         System.out.println(plain);

@@ -123,7 +123,7 @@ public class HIBE {
         System.out.println(m.getClass().getName());
         System.out.println(m);
 
-        return new String(m.toBytes());
+        return new String(m.toBytes()).replace("\u0000", "");
     }
 
     private PairingParameters generate(String filename) {
