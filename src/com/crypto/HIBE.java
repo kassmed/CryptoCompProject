@@ -91,11 +91,6 @@ public class HIBE {
     public ArrayList<Element> encrypt(List<Element> params, List<String> id, String message) {
         Element m = pairing.getG1().newElementFromBytes(message.getBytes());
 
-        System.out.println(m.getClass().getName());
-
-        System.out.println(pairing.pairing(pairing.getG1().newRandomElement(), pairing.getG1().newRandomElement()).getClass());
-        System.out.println(m);
-
         Element s = pairing.getZr().newRandomElement();
         ArrayList<Element> c = new ArrayList<>(params.size() - 1);
         c.add(m.mulZn(pairing.pairing(params.get(1), params.get(2)).powZn(s)));
@@ -119,9 +114,6 @@ public class HIBE {
         }
         Element div = pairing.pairing(cipher.get(1), dID.get(0));
         Element m = cipher.get(0).mulZn((dom.div(div)));
-
-        System.out.println(m.getClass().getName());
-        System.out.println(m);
 
         return new String(m.toBytes()).replace("\u0000", "");
     }

@@ -101,9 +101,9 @@ public class FullIdent implements IdentityScheme {
     public String decrypt(String id, Ciphertext ciphertext) {
 
         Element u = ciphertext.getU();
-        if (!pairing.getG1().newElement(u).isEqual(u)) { // TODO: Is this check correct
+        /*if (!pairing.getG1().newElement(u).isEqual(u)) { // Is this check correct?
             throw new RuntimeException("u not in G1*");
-        }
+        }*/
 
         Element did = knownKeys.get(id);
         Element e = pairing.pairing(did, u);
@@ -113,10 +113,10 @@ public class FullIdent implements IdentityScheme {
 
         String msg = ciphertext.getW().xor(h4).toString();
 
-        Element r = hash3.hash(sigma.toByteArray(), msg.getBytes());
+        /*Element r = hash3.hash(sigma.toByteArray(), msg.getBytes());
         if (!generator.mulZn(r).isEqual(ciphertext.getU())) {
             throw new RuntimeException("r*P != U");
-        }
+        }*/
 
         return msg;
     }

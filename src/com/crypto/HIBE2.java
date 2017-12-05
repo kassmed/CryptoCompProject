@@ -34,26 +34,19 @@ public class HIBE2 {
         List<Element> params = new ArrayList<>();
 
         // Find generator
-        // TODO: Randomize
-        //Element g = pairing.getG1().newRandomElement();
-        Element g = pairing.getG1().newElementFromBytes(new byte[] {8, 86, -76, -85, 4, -64, 28, -99, 125, 105, 44, -17, 97, -73, -68, 113, -59, 97, 120, -3, 31, -17, 39, 126, -113, -9, -35, -72, -121, -83, 49, 7, -101, 7, -116, 77, -124, -85, -39, 66, 7, 18, 78, -76, -30, 84, -11, 52, -99, -103, 58, -115, 16, -8, -124, 96, -4, 23, -121, -69, 64, -90, 30, 45, -13, -59});
-        // Element g = pairing.getG1().newElementFromBytes("fjknm".getBytes());
+        Element g = pairing.getG1().newRandomElement();
         Element ord = pairing.getZr().newElement(pairing.getG1().getOrder());
         Element gmul = g.duplicate().mulZn(ord);
         if (g.isOne() || !gmul.isZero()) { throw new RuntimeException("g is not generator"); }
         params.add(0, g);
 
 
-        // TODO: Randomize
-        //Element x = pairing.getZr().newRandomElement();
-        Element x = pairing.getZr().newElement(BigInteger.TEN);
+        Element x = pairing.getZr().newRandomElement();
         Element gx = g.duplicate().powZn(x);
         if (gx.isZero() || gx.isOne()) { throw new RuntimeException("ill result for sp"); }
         params.add(1, gx);
 
-        // TODO: Randomize
-        //Element y = pairing.getZr().newRandomElement();
-        Element y = pairing.getZr().newElement(BigInteger.TEN);
+        Element y = pairing.getZr().newRandomElement();
         Element gy = g.duplicate().powZn(y);
         if (gx.isZero() || gx.isOne()) { throw new RuntimeException("ill result for sp"); }
         params.add(2, gy);
@@ -68,9 +61,7 @@ public class HIBE2 {
     public List<Element> keyGen(List<Element> params, String identifier){
         Element id = pairing.getZr().newElementFromBytes(identifier.getBytes());
 
-        // TODO: Randomize
-        // Element r = pairing.getZr().newRandomElement();
-        Element r = pairing.getZr().newOneElement();
+        Element r = pairing.getZr().newRandomElement();
 
         Element x = masterKey.get(0);
         Element y = masterKey.get(1);
@@ -85,11 +76,7 @@ public class HIBE2 {
     public ArrayList<Element> encrypt(List<Element> params, String identifier, String message) {
         Element id = pairing.getZr().newElementFromBytes(identifier.getBytes(charset));
         Element m = pairing.getGT().newElementFromBytes(message.getBytes());
-        System.out.println("INPUT: " + m);
-
-        // TODO: Randomize
-        // Element s = pairing.getZr().newRandomElement();
-        Element s = pairing.getZr().newOneElement();
+        Element s = pairing.getZr().newRandomElement();
 
         ArrayList<Element> cipher = new ArrayList<>();
 
@@ -115,7 +102,6 @@ public class HIBE2 {
 
         Element e = pairing.pairing(left, right);
         Element m = c.duplicate().div(e);
-        System.out.println("OUTPUT: " + m);
 
         return new String(m.toBytes(), charset).replace("\u0000", ""); /*
         byte[] bytes = m.toBytes();
